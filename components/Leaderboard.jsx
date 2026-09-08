@@ -33,7 +33,7 @@ export default function Leaderboard({ cohort, label }) {
     let cancelled = false;
     const load = async () => {
       try {
-        const res = await fetch(`/api/leaderboard?cohort=${cohort}`);
+        const res = await fetch(`/api/leaderboard?cohort=${cohort}`, { cache: "no-store" });
         if (!res.ok) throw new Error(String(res.status));
         const json = await res.json();
         if (cancelled) return;
@@ -55,7 +55,7 @@ export default function Leaderboard({ cohort, label }) {
     if (query.length < 2) { setResults(null); return; }
     debounce.current = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { cache: "no-store" });
         const json = await res.json();
         setResults(json.results || []);
       } catch { setResults([]); }
@@ -75,7 +75,7 @@ export default function Leaderboard({ cohort, label }) {
       <header className="masthead">
         <Link href="/" className="brand">Meesho Creator Club</Link>
         <h1>Creator Leaderboard</h1>
-        <p className="sub">Ranked by GMV (last 7 days) · refreshed hourly</p>
+        <p className="sub">Ranked by lifetime NMV · orders & GMV shown for the last 7 days · refreshed hourly</p>
         <div className="cohort-row">
           {Object.entries(COHORTS).map(([key, c]) => (
             <Link key={key} href={`/l/${key}`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
