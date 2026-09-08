@@ -17,55 +17,66 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        0,
-        0
+        -2080,
+        32
       ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $env.METABASE_URL }}/api/card/{{ $env.METABASE_CARD_ID }}/query/json",
+        "url": "https://metabase-main.bi.meeshogcp.in/api/card/194161/query/json",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
-              "name": "X-API-KEY",
-              "value": "={{ $env.METABASE_API_KEY }}"
+              "name": "User-Agent",
+              "value": "Yaak/1.0"
             },
             {
-              "name": "Content-Type",
-              "value": "application/json"
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br, zstd"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "Authorization",
+              "value": "REPLACE_ME"
+            },
+            {
+              "name": "X-Metabase-Session",
+              "value": "REPLACE_WITH_METABASE_SESSION"
             }
           ]
         },
         "options": {
-          "timeout": 120000,
-          "response": {
-            "response": {
-              "fullResponse": false
-            }
-          }
+          "timeout": 120000
         }
       },
       "id": "metabase-1",
       "name": "Metabase: fetch creator data",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "typeVersion": 4.3,
       "position": [
-        230,
-        0
+        -1856,
+        32
       ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $env.LEADERBOARD_APP_URL }}/api/publish",
+        "url": "https://leaderboradtrial.vercel.app/api/publish",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "=Bearer {{ $env.LEADERBOARD_PUBLISH_TOKEN }}"
+              "value": "Bearer REPLACE_WITH_PUBLISH_TOKEN"
             },
             {
               "name": "Content-Type",
@@ -86,8 +97,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        460,
-        0
+        -1632,
+        32
       ]
     },
     {
@@ -116,8 +127,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        690,
-        0
+        -1408,
+        32
       ]
     },
     {
@@ -129,8 +140,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        920,
-        140
+        -1184,
+        176
       ]
     }
   ],
