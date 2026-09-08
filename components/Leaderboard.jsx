@@ -6,13 +6,7 @@ import { COHORTS } from "@/lib/process";
 
 const TABS = ["National", "North", "South", "East", "West"];
 
-const fmtINR = (n) => {
-  if (n == null) return "—";
-  if (n >= 1e7) return `₹${(n / 1e7).toFixed(n >= 1e8 ? 0 : 1)}Cr`;
-  if (n >= 1e5) return `₹${(n / 1e5).toFixed(n >= 1e6 ? 0 : 1)}L`;
-  if (n >= 1e3) return `₹${Math.round(n / 1e3)}K`;
-  return `₹${n}`;
-};
+const fmtINR = (n) => (n == null ? "—" : `₹${Math.round(n).toLocaleString("en-IN")}`);
 const fmtInt = (n) => (n == null ? "—" : Number(n).toLocaleString("en-IN"));
 const fmtTime = (iso) =>
   new Date(iso).toLocaleString("en-IN", {
@@ -128,7 +122,6 @@ export default function Leaderboard({ cohort, label }) {
                 <div className="cell"><small>{r.region ? `${r.region} rank` : "Regional rank"}</small><span>{r.regionalRank ? `#${fmtInt(r.regionalRank)}` : "—"}</span></div>
                 <div className="cell"><small>National rank</small><span>#{fmtInt(r.nationalRank)}</span></div>
                 <div className="cell"><small>Overall rank</small><span>#{fmtInt(r.overallRank)}</span></div>
-                <div className="cell"><small>Lifetime NMV</small><span>{fmtINR(r.nmv)}</span></div>
                 <div className="cell"><small>Orders (7d)</small><span>{fmtInt(r.orders)}</span></div>
                 <div className="cell"><small>GMV (7d)</small><span>{fmtINR(r.gmv)}</span></div>
                 <div className="cell"><small>State</small><span>{r.state || "—"}</span></div>
@@ -169,7 +162,6 @@ export default function Leaderboard({ cohort, label }) {
                       {isRegional && <th>National rank</th>}
                       <th>Overall rank</th>
                       <th>Instagram handle</th>
-                      <th>Lifetime NMV</th>
                       <th>Orders (7d)</th>
                       <th>GMV (7d)</th>
                       <th>State</th>
@@ -184,7 +176,6 @@ export default function Leaderboard({ cohort, label }) {
                           {isRegional && <td className="dim">#{fmtInt(r.nationalRank)}</td>}
                           <td className="dim">#{fmtInt(r.overallRank)}</td>
                           <td className="handle-cell">@{r.handle || r.id}</td>
-                          <td className="nmv-cell">{fmtINR(r.nmv)}</td>
                           <td>{fmtInt(r.orders)}</td>
                           <td>{fmtINR(r.gmv)}</td>
                           <td className="dim">{r.state || "—"}</td>
@@ -192,7 +183,7 @@ export default function Leaderboard({ cohort, label }) {
                       );
                     })}
                     {rows.length === 0 && (
-                      <tr><td colSpan={isRegional ? 8 : 7} className="state">No ranked creators in this view yet.</td></tr>
+                      <tr><td colSpan={isRegional ? 7 : 6} className="state">No ranked creators in this view yet.</td></tr>
                     )}
                   </tbody>
                 </table>
