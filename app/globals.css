@@ -113,6 +113,7 @@ tr.top3 td { background: linear-gradient(90deg, var(--gold-soft) 0, transparent 
 tr.top3 .rank-primary { background: var(--gold-soft); }
 
 .handle-cell { font-weight: 600; }
+.nmv-cell { font-weight: 700; }
 .dim { color: var(--ink-soft); }
 
 .board-foot { padding: 10px 14px; font-size: 12.5px; color: var(--ink-soft); border-top: 1.5px solid var(--line); }
