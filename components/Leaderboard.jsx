@@ -93,7 +93,7 @@ export default function Leaderboard({ cohort, label }) {
 
       {data?.meta && (
         <p className="updated">
-          Last updated: <b>{fmtTime(data.meta.generatedAt)}</b> · {fmtInt(data.meta.total)} creators in {label}
+          Last updated: <b>{fmtTime(data.meta.generatedAt)}</b>
         </p>
       )}
       {(stale || failed) && data && (
@@ -196,11 +196,6 @@ export default function Leaderboard({ cohort, label }) {
                     )}
                   </tbody>
                 </table>
-              </div>
-              <div className="board-foot">
-                {isRegional
-                  ? `Top 50 creators in ${tab} for the ${label} cohort. Can’t find yourself? Use search above — every eligible creator is ranked.`
-                  : `Top 100 creators nationally for the ${label} cohort. Can’t find yourself? Use search above — every eligible creator is ranked.`}
               </div>
             </div>
           )}
