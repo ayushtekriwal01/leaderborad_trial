@@ -1,0 +1,139 @@
+/* Rani-pink on plum-ink: rankings board for an Instagram-first creator audience.
+   The one loud element is the primary-rank column; everything else stays quiet. */
+
+:root {
+  --paper: #fdf9fb;
+  --ink: #22101c;
+  --ink-soft: #6d5464;
+  --line: #efdde8;
+  --accent: #c71e6b;      /* deep rani pink — primary rank, actions */
+  --accent-soft: #fbe8f1;
+  --gold: #a8780a;
+  --gold-soft: #faf1d8;
+  --card: #ffffff;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px 96px; }
+
+/* ---------- header ---------- */
+.masthead { padding: 28px 0 10px; border-bottom: 2px solid var(--ink); }
+.masthead .brand {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+  color: var(--accent); text-decoration: none;
+}
+.masthead h1 {
+  margin: 6px 0 2px; font-size: clamp(30px, 6vw, 46px);
+  font-weight: 800; letter-spacing: -0.02em; line-height: 1.02;
+}
+.masthead .sub { margin: 0 0 14px; color: var(--ink-soft); font-size: 15px; }
+.updated { font-size: 13px; color: var(--ink-soft); }
+.updated b { color: var(--ink); font-weight: 600; }
+
+/* ---------- cohort switcher (index + page) ---------- */
+.cohort-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 0; }
+.cohort-chip {
+  border: 1.5px solid var(--line); background: var(--card);
+  padding: 7px 13px; border-radius: 999px; font-size: 14px; font-weight: 600;
+  text-decoration: none; color: var(--ink-soft);
+}
+.cohort-chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+/* ---------- tabs ---------- */
+.tabs {
+  display: flex; gap: 4px; margin: 18px 0 14px; padding: 4px;
+  background: #f6ecf2; border-radius: 12px; width: fit-content; max-width: 100%;
+  overflow-x: auto;
+}
+.tabs button {
+  border: 0; background: transparent; font: inherit; font-weight: 600;
+  padding: 8px 16px; border-radius: 9px; cursor: pointer; color: var(--ink-soft);
+  white-space: nowrap;
+}
+.tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- search ---------- */
+.search { position: relative; margin: 18px 0 6px; }
+.search input {
+  width: 100%; font: inherit; font-size: 16px;
+  padding: 13px 16px 13px 42px; border-radius: var(--radius);
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
+}
+.search input:focus { outline: none; border-color: var(--accent); }
+.search .icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); }
+
+.result-card {
+  border: 1.5px solid var(--line); border-left: 4px solid var(--accent);
+  background: var(--card); border-radius: var(--radius);
+  padding: 14px 16px; margin: 10px 0;
+}
+.result-card .handle { font-weight: 700; font-size: 17px; }
+.result-card .cohort-tag { color: var(--accent); font-weight: 600; font-size: 13px; margin-left: 8px; }
+.result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
+.result-grid .cell small { display: block; color: var(--ink-soft); font-size: 12px; margin-bottom: 2px; }
+.result-grid .cell span { font-weight: 700; font-variant-numeric: tabular-nums; }
+.result-note { margin-top: 8px; font-size: 13px; color: var(--gold); background: var(--gold-soft); border-radius: 8px; padding: 6px 10px; display: inline-block; }
+.result-empty { color: var(--ink-soft); padding: 12px 2px; font-size: 15px; }
+
+/* ---------- table ---------- */
+.board { border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--card); overflow: hidden; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; }
+thead th {
+  text-align: left; font-size: 12.5px; font-weight: 600; color: var(--ink-soft);
+  padding: 12px 14px; border-bottom: 1.5px solid var(--line); background: var(--card);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+  font-size: 15px; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+tbody tr:last-child td { border-bottom: 0; }
+
+/* primary rank — the loud column */
+.rank-primary {
+  position: sticky; left: 0; background: var(--card);
+  font-weight: 800; font-size: 19px; color: var(--accent);
+  min-width: 64px; box-shadow: 1px 0 0 var(--line);
+}
+thead .rank-primary { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+tr.top3 .rank-primary { color: var(--gold); }
+tr.top3 td { background: linear-gradient(90deg, var(--gold-soft) 0, transparent 240px); }
+tr.top3 .rank-primary { background: var(--gold-soft); }
+
+.handle-cell { font-weight: 600; }
+.dim { color: var(--ink-soft); }
+
+.board-foot { padding: 10px 14px; font-size: 12.5px; color: var(--ink-soft); border-top: 1.5px solid var(--line); }
+
+/* ---------- states ---------- */
+.state { padding: 48px 16px; text-align: center; color: var(--ink-soft); }
+.state b { color: var(--ink); }
+.stale-banner {
+  margin: 12px 0; padding: 9px 14px; border-radius: 10px; font-size: 13.5px;
+  background: var(--gold-soft); color: var(--gold);
+}
+
+/* ---------- index page ---------- */
+.cohort-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 26px; }
+.cohort-card {
+  display: block; text-decoration: none; background: var(--card);
+  border: 1.5px solid var(--line); border-radius: var(--radius); padding: 20px 18px;
+}
+.cohort-card:hover { border-color: var(--accent); }
+.cohort-card .range { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+.cohort-card .desc { color: var(--ink-soft); font-size: 14px; margin-top: 6px; }
+.cohort-card .go { color: var(--accent); font-weight: 700; font-size: 14px; margin-top: 14px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
