@@ -26,6 +26,6 @@ export async function GET(req) {
       national: c.national,
       regions: c.regions,
     },
-    { headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=3600" } }
+    { headers: { "Cache-Control": "s-maxage=30, stale-while-revalidate=30" } }
   );
 }
