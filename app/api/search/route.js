@@ -30,6 +30,6 @@ export async function GET(req) {
   }
   return NextResponse.json(
     { results, meta: { version: ds.version, generatedAt: ds.generatedAt } },
-    { headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=600" } }
+    { headers: { "Cache-Control": "s-maxage=30, stale-while-revalidate=30" } }
   );
 }
