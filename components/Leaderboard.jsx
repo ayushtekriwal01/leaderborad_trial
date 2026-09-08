@@ -81,7 +81,7 @@ export default function Leaderboard({ cohort, label }) {
       <header className="masthead">
         <Link href="/" className="brand">Meesho Creator Club</Link>
         <h1>Creator Leaderboard</h1>
-        <p className="sub">Lifetime NMV cohort · ranked hourly by lifetime NMV</p>
+        <p className="sub">Ranked by lifetime NMV · orders & GMV shown for the last 7 days · refreshed hourly</p>
         <div className="cohort-row">
           {Object.entries(COHORTS).map(([key, c]) => (
             <Link key={key} href={`/l/${key}`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
@@ -128,8 +128,9 @@ export default function Leaderboard({ cohort, label }) {
                 <div className="cell"><small>{r.region ? `${r.region} rank` : "Regional rank"}</small><span>{r.regionalRank ? `#${fmtInt(r.regionalRank)}` : "—"}</span></div>
                 <div className="cell"><small>National rank</small><span>#{fmtInt(r.nationalRank)}</span></div>
                 <div className="cell"><small>Overall rank</small><span>#{fmtInt(r.overallRank)}</span></div>
-                <div className="cell"><small>Orders</small><span>{fmtInt(r.orders)}</span></div>
-                <div className="cell"><small>GMV</small><span>{fmtINR(r.gmv)}</span></div>
+                <div className="cell"><small>Lifetime NMV</small><span>{fmtINR(r.nmv)}</span></div>
+                <div className="cell"><small>Orders (7d)</small><span>{fmtInt(r.orders)}</span></div>
+                <div className="cell"><small>GMV (7d)</small><span>{fmtINR(r.gmv)}</span></div>
                 <div className="cell"><small>State</small><span>{r.state || "—"}</span></div>
               </div>
               {!r.inNationalTopN && (
@@ -168,8 +169,9 @@ export default function Leaderboard({ cohort, label }) {
                       {isRegional && <th>National rank</th>}
                       <th>Overall rank</th>
                       <th>Instagram handle</th>
-                      <th>Orders</th>
-                      <th>GMV</th>
+                      <th>Lifetime NMV</th>
+                      <th>Orders (7d)</th>
+                      <th>GMV (7d)</th>
                       <th>State</th>
                     </tr>
                   </thead>
@@ -182,6 +184,7 @@ export default function Leaderboard({ cohort, label }) {
                           {isRegional && <td className="dim">#{fmtInt(r.nationalRank)}</td>}
                           <td className="dim">#{fmtInt(r.overallRank)}</td>
                           <td className="handle-cell">@{r.handle || r.id}</td>
+                          <td className="nmv-cell">{fmtINR(r.nmv)}</td>
                           <td>{fmtInt(r.orders)}</td>
                           <td>{fmtINR(r.gmv)}</td>
                           <td className="dim">{r.state || "—"}</td>
@@ -189,7 +192,7 @@ export default function Leaderboard({ cohort, label }) {
                       );
                     })}
                     {rows.length === 0 && (
-                      <tr><td colSpan={isRegional ? 7 : 6} className="state">No ranked creators in this view yet.</td></tr>
+                      <tr><td colSpan={isRegional ? 8 : 7} className="state">No ranked creators in this view yet.</td></tr>
                     )}
                   </tbody>
                 </table>
