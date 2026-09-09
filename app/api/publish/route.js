@@ -30,7 +30,34 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: "body.rows must be a non-empty array" }, { status: 400 });
   }
 
-  const { ok, errors, dataset } = buildDataset(rows);
+  const windowLabel =
+    typeof body?.windowLabel === "string" && body.windowLabel.trim()
+      ? body.windowLabel.trim().slice(0, 24)
+      : undefined;
+
+  const { ok, errors, dataset } = buildDataset(rows, { windowLabel });
+
+  // ---- Safety guards: a broken/partial card pull must never wipe the live board ----
+  const guards = [];
+  const MIN_ELIGIBLE = Number(process.env.PUBLISH_MIN_ELIGIBLE || 50);
+  if (dataset.counts.eligible < MIN_ELIGIBLE) {
+    guards.push(
+      `only ${dataset.counts.eligible} eligible creators (< ${MIN_ELIGIBLE}); dropped: ${JSON.stringify(dataset.counts.dropped)}. ` +
+      `Looks like a broken/partial query — previous leaderboard kept live. ` +
+      `(Lower PUBLISH_MIN_ELIGIBLE in Vercel env if this is genuinely expected.)`
+    );
+  }
+  if (!dataset.counts.columns?.gmv) {
+    guards.push(
+      `no GMV column detected in payload (looked for total_gmv_*, gmv_*, *_gmv). ` +
+      `Columns seen: ${Object.keys(rows[0] || {}).join(", ")}. Ranking would be meaningless — publish blocked.`
+    );
+  }
+  if (guards.length) {
+    console.error("publish blocked by guards:", guards);
+    return NextResponse.json({ ok: false, published: false, errors: guards }, { status: 422 });
+  }
+
   if (!ok) {
     // Validation failed → existing leaderboard stays live, untouched.
     console.error("publish rejected:", errors.slice(0, 20));
