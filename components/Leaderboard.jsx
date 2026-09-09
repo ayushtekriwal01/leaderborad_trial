@@ -116,7 +116,13 @@ export default function Leaderboard({ cohort, label }) {
           )}
           {results.map((r) => (
             <article key={r.id} className="result-card">
-              <span className="handle">@{r.handle || r.id}</span>
+              <span className="handle">
+                {r.handle ? (
+                  <a href={`https://instagram.com/${r.handle}`} target="_blank" rel="noopener noreferrer">@{r.handle}</a>
+                ) : (
+                  r.id
+                )}
+              </span>
               <span className="cohort-tag">{r.cohortLabel}</span>
               <div className="result-grid">
                 <div className="cell"><small>{r.region ? `${r.region} rank` : "Regional rank"}</small><span>{r.regionalRank ? `#${fmtInt(r.regionalRank)}` : "—"}</span></div>
@@ -165,6 +171,7 @@ export default function Leaderboard({ cohort, label }) {
                       <th>Orders (7d)</th>
                       <th>GMV (7d)</th>
                       <th>State</th>
+                      {!isRegional && <th>Region</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -175,15 +182,22 @@ export default function Leaderboard({ cohort, label }) {
                           <td className="rank-primary">#{primary}</td>
                           {isRegional && <td className="dim">#{fmtInt(r.nationalRank)}</td>}
                           <td className="dim">#{fmtInt(r.overallRank)}</td>
-                          <td className="handle-cell">@{r.handle || r.id}</td>
+                          <td className="handle-cell">
+                            {r.handle ? (
+                              <a href={`https://instagram.com/${r.handle}`} target="_blank" rel="noopener noreferrer">@{r.handle}</a>
+                            ) : (
+                              r.id
+                            )}
+                          </td>
                           <td>{fmtInt(r.orders)}</td>
                           <td>{fmtINR(r.gmv)}</td>
                           <td className="dim">{r.state || "—"}</td>
+                          {!isRegional && <td className="dim">{r.region || "—"}</td>}
                         </tr>
                       );
                     })}
                     {rows.length === 0 && (
-                      <tr><td colSpan={isRegional ? 7 : 6} className="state">No ranked creators in this view yet.</td></tr>
+                      <tr><td colSpan={7} className="state">No ranked creators in this view yet.</td></tr>
                     )}
                   </tbody>
                 </table>
