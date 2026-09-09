@@ -21,7 +21,7 @@ export default function Home() {
         {Object.entries(COHORTS).map(([key, c]) => (
           <Link key={key} href={`/l/${key}?nav=1`} className="cohort-card">
             <div className="range">{c.label}</div>
-            <div className="desc">Lifetime NMV cohort · Top 100 national · Top 50 per region</div>
+            <div className="desc">Creators like you · Top 100 national · Top 50 per region</div>
             <div className="go">Open leaderboard</div>
           </Link>
         ))}
