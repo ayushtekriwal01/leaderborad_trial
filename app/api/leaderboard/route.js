@@ -22,7 +22,7 @@ export async function GET(req) {
   const c = ds.cohorts[cohort];
   return NextResponse.json(
     {
-      meta: { version: ds.version, generatedAt: ds.generatedAt, cohort, label: c.label, total: c.total },
+      meta: { version: ds.version, generatedAt: ds.generatedAt, windowLabel: ds.windowLabel || "7d", cohort, label: c.label, total: c.total },
       national: c.national,
       regions: c.regions,
     },
