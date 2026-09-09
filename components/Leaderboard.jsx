@@ -69,13 +69,14 @@ export default function Leaderboard({ cohort, label }) {
   }, [data, tab]);
 
   const isRegional = tab !== "National";
+  const w = data?.meta?.windowLabel || "7d";
 
   return (
     <main className="wrap">
       <header className="masthead">
         <Link href="/" className="brand">Meesho Creator Club</Link>
         <h1>Creator Leaderboard</h1>
-        <p className="sub">Ranked by GMV (last 7 days) · refreshed hourly</p>
+        <p className="sub">Ranked by GMV ({w}) · refreshed hourly</p>
         <div className="cohort-row">
           {Object.entries(COHORTS).map(([key, c]) => (
             <Link key={key} href={`/l/${key}`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
@@ -128,8 +129,8 @@ export default function Leaderboard({ cohort, label }) {
                 <div className="cell"><small>{r.region ? `${r.region} rank` : "Regional rank"}</small><span>{r.regionalRank ? `#${fmtInt(r.regionalRank)}` : "—"}</span></div>
                 <div className="cell"><small>National rank</small><span>#{fmtInt(r.nationalRank)}</span></div>
                 <div className="cell"><small>Overall rank</small><span>#{fmtInt(r.overallRank)}</span></div>
-                <div className="cell"><small>Orders (7d)</small><span>{fmtInt(r.orders)}</span></div>
-                <div className="cell"><small>GMV (7d)</small><span>{fmtINR(r.gmv)}</span></div>
+                <div className="cell"><small>Orders ({w})</small><span>{fmtInt(r.orders)}</span></div>
+                <div className="cell"><small>GMV ({w})</small><span>{fmtINR(r.gmv)}</span></div>
                 <div className="cell"><small>State</small><span>{r.state || "—"}</span></div>
               </div>
               {!r.inNationalTopN && (
@@ -168,8 +169,8 @@ export default function Leaderboard({ cohort, label }) {
                       {isRegional && <th>National rank</th>}
                       <th>Overall rank</th>
                       <th>Instagram handle</th>
-                      <th>Orders (7d)</th>
-                      <th>GMV (7d)</th>
+                      <th>Orders ({w})</th>
+                      <th>GMV ({w})</th>
                       <th>State</th>
                       {!isRegional && <th>Region</th>}
                     </tr>
