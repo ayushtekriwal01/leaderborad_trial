@@ -4,7 +4,7 @@
 
 import { NextResponse } from "next/server";
 import { buildDataset } from "@/lib/process";
-import { publishDataset } from "@/lib/store";
+import { publishDataset, readDataset } from "@/lib/store";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -63,6 +63,28 @@ export async function POST(req) {
     console.error("publish rejected:", errors.slice(0, 20));
     return NextResponse.json(
       { ok: false, published: false, errors: errors.slice(0, 50) },
+      { status: 422 }
+    );
+  }
+
+  // Day-one / upstream-failure guards: a sparse sale day is fine, but a payload
+  // that would blank or gut the board means upstream data broke — keep last good data.
+  if (dataset.counts.eligible === 0) {
+    return NextResponse.json(
+      { ok: false, published: false, errors: ["0 eligible creators in payload — refusing to blank the live leaderboard"] },
+      { status: 422 }
+    );
+  }
+  const prev = await readDataset().catch(() => null);
+  if (prev?.counts?.eligible >= 100 && dataset.counts.eligible < Math.ceil(prev.counts.eligible * 0.2)) {
+    return NextResponse.json(
+      {
+        ok: false,
+        published: false,
+        errors: [
+          `eligible creators collapsed from ${prev.counts.eligible} to ${dataset.counts.eligible} (>80% drop) — looks like an upstream data issue; previous dataset stays live`,
+        ],
+      },
       { status: 422 }
     );
   }
