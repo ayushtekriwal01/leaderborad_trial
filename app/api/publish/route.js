@@ -10,16 +10,19 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function POST(req) {
-  const auth = req.headers.get("authorization") || "";
-  if (auth !== `Bearer ${process.env.PUBLISH_TOKEN}`) {
-    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-  }
-
   let body;
   try {
-    body = await req.json();
+    body = JSON.parse(await req.text());
   } catch {
     return NextResponse.json({ ok: false, error: "invalid JSON body" }, { status: 400 });
+  }
+
+  // Token via Authorization header, or in the body (lets trusted in-network
+  // pages publish via a CORS-simple text/plain POST).
+  const auth = (req.headers.get("authorization") || "").replace(/^Bearer /, "");
+  const token = auth || body?.token;
+  if (token !== process.env.PUBLISH_TOKEN) {
+    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
   const rows = Array.isArray(body) ? body : body?.rows;
