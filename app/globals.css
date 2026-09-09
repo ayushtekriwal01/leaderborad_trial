@@ -409,3 +409,10 @@ tr.top3 .rank-primary { background: var(--gold-soft); }
   .p-gmv { font-size: 16px; }
   .p-meta { font-size: 10.5px; }
 }
+
+/* similar-creators highlight line in cohort hero */
+.hero-points .peer-note {
+  background: rgba(255, 255, 255, 0.20);
+  border-color: rgba(255, 255, 255, 0.48);
+  font-weight: 700; color: #fff;
+}
