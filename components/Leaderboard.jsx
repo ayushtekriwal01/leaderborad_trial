@@ -5,6 +5,7 @@ import Link from "next/link";
 import { COHORTS } from "@/lib/process";
 
 const TABS = ["National", "North", "South", "East", "West"];
+const METRIC = "Sale"; // shown as the value column — flip to "GMV" after the sale
 
 const fmtINR = (n) => (n == null ? "—" : `₹${Math.round(n).toLocaleString("en-IN")}`);
 const fmtInt = (n) => (n == null ? "—" : Number(n).toLocaleString("en-IN"));
@@ -74,6 +75,7 @@ export default function Leaderboard({ cohort, label }) {
   }, [data, tab]);
 
   const isRegional = tab !== "National";
+  const isOverall = cohort === "overall";
 
   return (
     <main className="wrap">
@@ -95,6 +97,9 @@ export default function Leaderboard({ cohort, label }) {
         <p className="hero-cta">Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard &amp; win exciting rewards! 🔥</p>
         {showNav && (
           <div className="cohort-row">
+            <Link href={`/l/overall?nav=1`} className={`cohort-chip ${isOverall ? "active" : ""}`}>
+              Overall
+            </Link>
             {Object.entries(COHORTS).map(([key, c]) => (
               <Link key={key} href={`/l/${key}?nav=1`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
                 {c.label}
@@ -148,7 +153,7 @@ export default function Leaderboard({ cohort, label }) {
                 <div className="cell"><small>National rank</small><span>#{fmtInt(r.nationalRank)}</span></div>
                 <div className="cell"><small>Overall rank</small><span>#{fmtInt(r.overallRank)}</span></div>
                 <div className="cell"><small>Orders</small><span>{fmtInt(r.orders)}</span></div>
-                <div className="cell"><small>GMV</small><span>{fmtINR(r.gmv)}</span></div>
+                <div className="cell"><small>{METRIC}</small><span>{fmtINR(r.gmv)}</span></div>
                 <div className="cell"><small>State</small><span>{r.state || "—"}</span></div>
               </div>
               {!r.inNationalTopN && (
@@ -183,6 +188,7 @@ export default function Leaderboard({ cohort, label }) {
                 const rank = isRegional ? r.regionalRank : r.nationalRank;
                 return (
                   <div key={r.id} className={`podium-card p${rank}`}>
+                    <div className="p-avatar" aria-hidden>{(r.handle || r.id).charAt(0).toUpperCase()}</div>
                     <div className="medal" aria-hidden>{rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉"}</div>
                     <div className="p-rank">#{rank}</div>
                     <div className="p-handle">
@@ -207,11 +213,11 @@ export default function Leaderboard({ cohort, label }) {
                   <thead>
                     <tr>
                       <th className="rank-primary">{isRegional ? `${tab} rank` : "Rank"}</th>
-                      {isRegional && <th>National rank</th>}
-                      <th>Overall rank</th>
+                      {isRegional && <th>{isOverall ? "Overall rank" : "National rank"}</th>}
+                      {!isOverall && <th>Overall rank</th>}
                       <th>Instagram handle</th>
                       <th>Orders</th>
-                      <th>GMV</th>
+                      <th>{METRIC}</th>
                       <th>State</th>
                       {!isRegional && <th>Region</th>}
                     </tr>
@@ -223,7 +229,7 @@ export default function Leaderboard({ cohort, label }) {
                         <tr key={r.id}>
                           <td className="rank-primary">#{primary}</td>
                           {isRegional && <td className="dim">#{fmtInt(r.nationalRank)}</td>}
-                          <td className="dim">#{fmtInt(r.overallRank)}</td>
+                          {!isOverall && <td className="dim">#{fmtInt(r.overallRank)}</td>}
                           <td className="handle-cell">
                             {r.handle ? (
                               <a href={`https://instagram.com/${r.handle}`} target="_blank" rel="noopener noreferrer">@{r.handle}</a>
@@ -244,6 +250,28 @@ export default function Leaderboard({ cohort, label }) {
                   </tbody>
                 </table>
               </div>
+              <ol className="mlist">
+                {rows.slice(3).map((r) => {
+                  const primary = isRegional ? r.regionalRank : r.nationalRank;
+                  return (
+                    <li key={r.id}>
+                      <span className="coin">#{primary}</span>
+                      <span className="who">
+                        <span className="avatar" aria-hidden>{(r.handle || r.id).charAt(0).toUpperCase()}</span>
+                        <span className="wmeta">
+                          {r.handle ? (
+                            <a href={`https://instagram.com/${r.handle}`} target="_blank" rel="noopener noreferrer">@{r.handle}</a>
+                          ) : (
+                            <b>{r.id}</b>
+                          )}
+                          <small>{fmtInt(r.orders)} orders{r.state ? ` · ${r.state}` : ""}</small>
+                        </span>
+                      </span>
+                      <span className="val">▲ {fmtINR(r.gmv)}</span>
+                    </li>
+                  );
+                })}
+              </ol>
             </div>
           )}
         </>
