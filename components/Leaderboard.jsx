@@ -89,20 +89,22 @@ export default function Leaderboard({ cohort, label }) {
           <span className="live-pill"><span className="live-dot" aria-hidden />LIVE</span>
         </div>
         <h1><span className="trophy" aria-hidden>🏆</span> Sale Leaderboard</h1>
-        <p className="hero-lede">Your rank is based on GMV generated from posts during the sale posting window.</p>
+        <p className="hero-lede">
+          {isOverall
+            ? "The Overall Leaderboard — every creator who posted during the sale posting window, ranked together, with the top creators on display. Your rank is based on the sale you generate from those posts."
+            : "Your rank is based on the sale you generate from posts during the sale posting window."}
+        </p>
         <ul className="hero-points">
           <li><b>Overall National Rank</b> — among all creators posting during the sale</li>
-          {!isOverall && (
-            <li>
-              <b>Cohort Leaderboard</b> — based on your overall successful sale (post returns &amp; cancellations) as of the day
-              before the sale, with National + Regional ranks
-            </li>
-          )}
           {!isOverall && (
             <li className="peer-note">✨ You’re seeing creators just like you — this board groups similar-sized creators, so it’s a fair race!</li>
           )}
         </ul>
-        <p className="hero-cta">Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard &amp; win exciting rewards! 🔥</p>
+        <p className="hero-cta">
+          {isOverall
+            ? "Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard & win exciting rewards! 🔥"
+            : "Can’t find your username on the leaderboard, or not at the top yet? 👀 Push harder, climb the leaderboard & win exciting rewards! 🔥"}
+        </p>
         {showNav && (
           <div className="cohort-row">
             <Link href={`/l/overall?nav=1`} className={`cohort-chip ${isOverall ? "active" : ""}`}>
