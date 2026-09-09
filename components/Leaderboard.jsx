@@ -69,14 +69,21 @@ export default function Leaderboard({ cohort, label }) {
   }, [data, tab]);
 
   const isRegional = tab !== "National";
-  const w = data?.meta?.windowLabel || "7d";
 
   return (
     <main className="wrap">
-      <header className="masthead">
-        <Link href="/" className="brand">Meesho Creator Club</Link>
-        <h1>Creator Leaderboard</h1>
-        <p className="sub">Ranked by GMV ({w}) · refreshed hourly</p>
+      <header className="hero">
+        <div className="hero-top">
+          <Link href="/" className="brand">Meesho Creator Club</Link>
+          <span className="live-pill"><span className="live-dot" aria-hidden />LIVE</span>
+        </div>
+        <h1><span className="trophy" aria-hidden>🏆</span> Sale Leaderboard</h1>
+        <p className="hero-lede">Your rank is based on GMV generated from posts during the sale posting window.</p>
+        <ul className="hero-points">
+          <li><b>Overall National Rank</b> — among all creators posting during the sale</li>
+          <li><b>Cohort Leaderboard</b> — based on your lifetime NMV as of the day before the sale, with National + Regional ranks</li>
+        </ul>
+        <p className="hero-cta">Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard &amp; win exciting rewards! 🔥</p>
         <div className="cohort-row">
           {Object.entries(COHORTS).map(([key, c]) => (
             <Link key={key} href={`/l/${key}`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
@@ -129,8 +136,8 @@ export default function Leaderboard({ cohort, label }) {
                 <div className="cell"><small>{r.region ? `${r.region} rank` : "Regional rank"}</small><span>{r.regionalRank ? `#${fmtInt(r.regionalRank)}` : "—"}</span></div>
                 <div className="cell"><small>National rank</small><span>#{fmtInt(r.nationalRank)}</span></div>
                 <div className="cell"><small>Overall rank</small><span>#{fmtInt(r.overallRank)}</span></div>
-                <div className="cell"><small>Orders ({w})</small><span>{fmtInt(r.orders)}</span></div>
-                <div className="cell"><small>GMV ({w})</small><span>{fmtINR(r.gmv)}</span></div>
+                <div className="cell"><small>Orders</small><span>{fmtInt(r.orders)}</span></div>
+                <div className="cell"><small>GMV</small><span>{fmtINR(r.gmv)}</span></div>
                 <div className="cell"><small>State</small><span>{r.state || "—"}</span></div>
               </div>
               {!r.inNationalTopN && (
@@ -159,7 +166,30 @@ export default function Leaderboard({ cohort, label }) {
             </div>
           )}
 
-          {data && (
+          {data && rows.length > 0 && (
+            <div className="podium">
+              {[rows[1], rows[0], rows[2]].filter(Boolean).map((r) => {
+                const rank = isRegional ? r.regionalRank : r.nationalRank;
+                return (
+                  <div key={r.id} className={`podium-card p${rank}`}>
+                    <div className="medal" aria-hidden>{rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉"}</div>
+                    <div className="p-rank">#{rank}</div>
+                    <div className="p-handle">
+                      {r.handle ? (
+                        <a href={`https://instagram.com/${r.handle}`} target="_blank" rel="noopener noreferrer">@{r.handle}</a>
+                      ) : (
+                        r.id
+                      )}
+                    </div>
+                    <div className="p-gmv">{fmtINR(r.gmv)}</div>
+                    <div className="p-meta">{fmtInt(r.orders)} orders{r.state ? ` · ${r.state}` : ""}</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {data && (rows.length === 0 || rows.length > 3) && (
             <div className="board">
               <div className="table-scroll">
                 <table>
@@ -169,17 +199,17 @@ export default function Leaderboard({ cohort, label }) {
                       {isRegional && <th>National rank</th>}
                       <th>Overall rank</th>
                       <th>Instagram handle</th>
-                      <th>Orders ({w})</th>
-                      <th>GMV ({w})</th>
+                      <th>Orders</th>
+                      <th>GMV</th>
                       <th>State</th>
                       {!isRegional && <th>Region</th>}
                     </tr>
                   </thead>
                   <tbody>
-                    {rows.map((r) => {
+                    {rows.slice(3).map((r) => {
                       const primary = isRegional ? r.regionalRank : r.nationalRank;
                       return (
-                        <tr key={r.id} className={primary <= 3 ? "top3" : ""}>
+                        <tr key={r.id}>
                           <td className="rank-primary">#{primary}</td>
                           {isRegional && <td className="dim">#{fmtInt(r.nationalRank)}</td>}
                           <td className="dim">#{fmtInt(r.overallRank)}</td>
