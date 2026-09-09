@@ -21,7 +21,12 @@ export default function Leaderboard({ cohort, label }) {
   const [tab, setTab] = useState("National");
   const [q, setQ] = useState("");
   const [results, setResults] = useState(null);
+  const [showNav, setShowNav] = useState(false); // full navigation only via ?nav=1 (home-page links)
   const debounce = useRef();
+
+  useEffect(() => {
+    try { setShowNav(new URLSearchParams(window.location.search).get("nav") === "1"); } catch {}
+  }, []);
 
   // Load: last-known dataset from localStorage first (page refresh never
   // blanks the board), then fetch the latest published dataset.
@@ -74,7 +79,11 @@ export default function Leaderboard({ cohort, label }) {
     <main className="wrap">
       <header className="hero">
         <div className="hero-top">
-          <Link href="/" className="brand">Meesho Creator Club</Link>
+          {showNav ? (
+            <Link href="/" className="brand">Meesho Creator Club</Link>
+          ) : (
+            <span className="brand">Meesho Creator Club</span>
+          )}
           <span className="live-pill"><span className="live-dot" aria-hidden />LIVE</span>
         </div>
         <h1><span className="trophy" aria-hidden>🏆</span> Sale Leaderboard</h1>
@@ -84,13 +93,15 @@ export default function Leaderboard({ cohort, label }) {
           <li><b>Cohort Leaderboard</b> — based on your lifetime NMV as of the day before the sale, with National + Regional ranks</li>
         </ul>
         <p className="hero-cta">Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard &amp; win exciting rewards! 🔥</p>
-        <div className="cohort-row">
-          {Object.entries(COHORTS).map(([key, c]) => (
-            <Link key={key} href={`/l/${key}`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
-              {c.label}
-            </Link>
-          ))}
-        </div>
+        {showNav && (
+          <div className="cohort-row">
+            {Object.entries(COHORTS).map(([key, c]) => (
+              <Link key={key} href={`/l/${key}?nav=1`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        )}
       </header>
 
       {data?.meta && (
