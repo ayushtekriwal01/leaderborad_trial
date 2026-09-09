@@ -13,6 +13,11 @@ export default function Home() {
         </p>
       </header>
       <div className="cohort-cards">
+        <Link href={`/l/overall?nav=1`} className="cohort-card">
+          <div className="range">Overall</div>
+          <div className="desc">Every cohort together · Top 100 national · Top 50 per region</div>
+          <div className="go">Open leaderboard</div>
+        </Link>
         {Object.entries(COHORTS).map(([key, c]) => (
           <Link key={key} href={`/l/${key}?nav=1`} className="cohort-card">
             <div className="range">{c.label}</div>
