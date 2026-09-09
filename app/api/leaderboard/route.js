@@ -9,8 +9,8 @@ export const runtime = "nodejs";
 
 export async function GET(req) {
   const cohort = new URL(req.url).searchParams.get("cohort");
-  if (!COHORTS[cohort]) {
-    return NextResponse.json({ error: "cohort must be one of c1,c2,c3,c4" }, { status: 400 });
+  if (cohort !== "overall" && !COHORTS[cohort]) {
+    return NextResponse.json({ error: "cohort must be one of c1,c2,c3,c4,overall" }, { status: 400 });
   }
   const ds = await readDataset();
   if (!ds) {
@@ -19,7 +19,13 @@ export async function GET(req) {
       { status: 503, headers: { "Retry-After": "60" } }
     );
   }
-  const c = ds.cohorts[cohort];
+  const c = cohort === "overall" ? ds.overall : ds.cohorts[cohort];
+  if (!c) {
+    return NextResponse.json(
+      { error: "Overall board not in the current dataset yet — it appears after the next publish" },
+      { status: 503, headers: { "Retry-After": "60" } }
+    );
+  }
   return NextResponse.json(
     {
       meta: { version: ds.version, generatedAt: ds.generatedAt, windowLabel: ds.windowLabel || "7d", cohort, label: c.label, total: c.total },
