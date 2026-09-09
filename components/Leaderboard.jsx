@@ -92,7 +92,15 @@ export default function Leaderboard({ cohort, label }) {
         <p className="hero-lede">Your rank is based on GMV generated from posts during the sale posting window.</p>
         <ul className="hero-points">
           <li><b>Overall National Rank</b> — among all creators posting during the sale</li>
-          <li><b>Cohort Leaderboard</b> — based on your lifetime NMV as of the day before the sale, with National + Regional ranks</li>
+          {!isOverall && (
+            <li>
+              <b>Cohort Leaderboard</b> — based on your overall successful sale (post returns &amp; cancellations) as of the day
+              before the sale, with National + Regional ranks
+            </li>
+          )}
+          {!isOverall && (
+            <li className="peer-note">✨ You’re seeing creators just like you — this board groups similar-sized creators, so it’s a fair race!</li>
+          )}
         </ul>
         <p className="hero-cta">Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard &amp; win exciting rewards! 🔥</p>
         {showNav && (
@@ -135,7 +143,7 @@ export default function Leaderboard({ cohort, label }) {
         <section aria-live="polite">
           {results.length === 0 && (
             <p className="result-empty">
-              No creator found for “{q.trim()}”. Check the handle spelling — creators below ₹15K lifetime NMV aren’t ranked yet.
+              No creator found for “{q.trim()}”. Check the handle spelling — creators below ₹15K overall successful sale aren’t ranked yet.
             </p>
           )}
           {results.map((r) => (
