@@ -3,16 +3,17 @@ import { COHORTS } from "@/lib/process";
 import Leaderboard from "@/components/Leaderboard";
 
 export function generateStaticParams() {
-  return Object.keys(COHORTS).map((cohort) => ({ cohort }));
+  return [...Object.keys(COHORTS), "overall"].map((cohort) => ({ cohort }));
 }
 
 export function generateMetadata({ params }) {
-  const c = COHORTS[params.cohort];
-  return c ? { title: `Creator Leaderboard — ${c.label}` } : {};
+  const label = params.cohort === "overall" ? "Overall" : COHORTS[params.cohort]?.label;
+  return label ? { title: `Creator Leaderboard — ${label}` } : {};
 }
 
 export default function CohortPage({ params }) {
   const { cohort } = params;
-  if (!COHORTS[cohort]) notFound();
-  return <Leaderboard cohort={cohort} label={COHORTS[cohort].label} />;
+  if (cohort !== "overall" && !COHORTS[cohort]) notFound();
+  const label = cohort === "overall" ? "Overall" : COHORTS[cohort].label;
+  return <Leaderboard cohort={cohort} label={label} />;
 }
