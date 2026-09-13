@@ -75,20 +75,6 @@ export async function POST(req) {
       { status: 422 }
     );
   }
-  const prev = await readDataset().catch(() => null);
-  if (prev?.counts?.eligible >= 100 && dataset.counts.eligible < Math.ceil(prev.counts.eligible * 0.2)) {
-    return NextResponse.json(
-      {
-        ok: false,
-        published: false,
-        errors: [
-          `eligible creators collapsed from ${prev.counts.eligible} to ${dataset.counts.eligible} (>80% drop) — looks like an upstream data issue; previous dataset stays live`,
-        ],
-      },
-      { status: 422 }
-    );
-  }
-
   await publishDataset(dataset);
   return NextResponse.json({
     ok: true,
