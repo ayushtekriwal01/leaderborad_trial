@@ -338,15 +338,7 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
                         <span className="ar-orders"><b>{fmtInt(r.orders)}</b> orders</span>
                         <span className="ar-sale">{fmtINR(r.gmv)}</span>
                         <span className="ar-gap">
-                          <span className="ar-track" style={{ "--w": `${pct}%` }}>
-                            <span className="ar-lane" aria-hidden="true" />
-                            <span className="ar-fill" />
-                            <span className="ar-rocket" aria-hidden="true">
-                              <span className="ar-flame" />
-                              <svg viewBox="0 0 30 28" width="26" height="24"><path d="M3 14 L10 7 H22 C26 7 29 10 29 14 C29 18 26 21 22 21 H10 Z" fill="#FFFFFF" /><circle cx="20" cy="14" r="3" fill="#9F2089" /><path d="M10 7 L6 1 H12 L15 7 Z" fill="#F43397" /><path d="M10 21 L6 27 H12 L15 21 Z" fill="#F43397" /></svg>
-                            </span>
-                            <svg className="ar-flag" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#FFD36B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 22V4" /><path d="M4 4h12l-2 4 2 4H4" /></svg>
-                          </span>
+                          <span className="ar-bar"><span style={{ width: `${pct}%` }} /></span>
                           <small>
                             {prev ? `${fmtINR(gap)} behind #${rankOf(prev)}` : ""}
                             {close && <span className="ar-hot">Close race</span>}
