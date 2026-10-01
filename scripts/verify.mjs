@@ -4,13 +4,14 @@
 // Usage (either raw source):
 //   METABASE_SESSION=<token> node scripts/verify.mjs --metabase https://metabase-main.bi.meeshogcp.in/api/card/194161/query/json
 //   node scripts/verify.mjs --raw raw.json
-// Options: --app https://leaderboradtrial.vercel.app (default) | --samples 25 | --dry (skip live compare)
+// Options: --app https://mbs-oct-sale-leaderboard.vercel.app (default) | --samples 25 | --dry (skip live compare)
 
 import { buildDataset, COHORTS, REGIONS } from "../lib/process.js";
+import { COHORT_SLUGS } from "../lib/slugs.js";
 import { readFileSync } from "fs";
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : d; };
-const APP = (arg("--app", "https://leaderboradtrial.vercel.app")).replace(/\/$/, "");
+const APP = (arg("--app", "https://mbs-oct-sale-leaderboard.vercel.app")).replace(/\/$/, "");
 const SAMPLES = Number(arg("--samples", 25));
 const DRY = process.argv.includes("--dry");
 
@@ -35,7 +36,7 @@ const row = (r) => ({ id: r.id, h: r.handle, n: r.nmv, o: r.orders, g: r.gmv, st
 
 console.log("\n[1] Full-board compare (4 national + 16 regional, every displayed field)");
 for (const c of Object.keys(COHORTS)) {
-  const live = await (await fetch(`${APP}/api/leaderboard?cohort=${c}`)).json();
+  const live = await (await fetch(`${APP}/api/leaderboard?cohort=${COHORT_SLUGS[c]}`)).json();
   if (live.meta.total !== dataset.cohorts[c].total) bad(`${c} total: live ${live.meta.total} vs expected ${dataset.cohorts[c].total}`);
   if (!same(live.national.map(row), dataset.cohorts[c].national.map(row))) bad(`${c}/national board differs`);
   for (const reg of REGIONS)
