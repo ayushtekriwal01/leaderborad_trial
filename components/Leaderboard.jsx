@@ -92,6 +92,49 @@ function Crown() {
   );
 }
 
+// MBS Oct sale window, IST: live from 9 Oct 2026 00:00 to the end of 17 Oct 2026.
+const SALE_START = Date.parse("2026-10-09T00:00:00+05:30");
+const SALE_END = Date.parse("2026-10-18T00:00:00+05:30");
+
+function Countdown() {
+  const [now, setNow] = useState(null); // client-only: avoids server/client time mismatch
+  useEffect(() => {
+    setNow(Date.now());
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  if (now == null) return <div className="ar-count ar-count-ph" aria-hidden="true" />;
+  const phase = now < SALE_START ? "pre" : now < SALE_END ? "live" : "over";
+  if (phase === "over") {
+    return (
+      <div className="ar-count over" role="status">
+        <span className="ar-count-label">MBS Oct Sale has ended · final rankings below</span>
+      </div>
+    );
+  }
+  const left = Math.max(0, (phase === "pre" ? SALE_START : SALE_END) - now);
+  const parts = [
+    ["Days", Math.floor(left / 86400000)],
+    ["Hrs", Math.floor(left / 3600000) % 24],
+    ["Min", Math.floor(left / 60000) % 60],
+    ["Sec", Math.floor(left / 1000) % 60],
+  ];
+  return (
+    <div className={`ar-count ${phase}`} role="timer" aria-live="off">
+      <span className="ar-count-label">
+        {phase === "live" ? <span className="ar-count-dot" aria-hidden="true" /> : null}
+        {phase === "pre" ? "Sale goes live in" : "Sale is LIVE · ends in"}
+        <small>{phase === "pre" ? "9 Oct, 12:00 am" : "17 Oct, 11:59 pm"}</small>
+      </span>
+      <span className="ar-count-boxes">
+        {parts.map(([lbl, v]) => (
+          <span key={lbl} className="ar-count-box"><b>{String(v).padStart(2, "0")}</b><small>{lbl}</small></span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 export default function Leaderboard({ cohort, label, isOverallBoard }) {
   const storageKey = `mcc-lb-${cohort}`;
   const [data, setData] = useState(null);
@@ -188,6 +231,8 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
             <span className="ar-updated">Last updated <b>{fmtTime(data.meta.generatedAt)}</b></span>
           )}
         </header>
+
+        <Countdown />
 
         <section className="ar-hero">
           <div className="ar-hero-copy">
