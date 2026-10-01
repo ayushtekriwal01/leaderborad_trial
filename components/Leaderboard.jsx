@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { COHORTS } from "@/lib/process";
 
 const TABS = ["National", "North", "South", "East", "West"];
 const METRIC = "Sale"; // shown as the value column — flip to "GMV" after the sale
@@ -14,7 +12,7 @@ const fmtTime = (iso) =>
     day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true,
   });
 
-export default function Leaderboard({ cohort, label }) {
+export default function Leaderboard({ cohort, label, isOverallBoard }) {
   const storageKey = `mcc-lb-${cohort}`;
   const [data, setData] = useState(null);
   const [stale, setStale] = useState(false);
@@ -22,12 +20,7 @@ export default function Leaderboard({ cohort, label }) {
   const [tab, setTab] = useState("National");
   const [q, setQ] = useState("");
   const [results, setResults] = useState(null);
-  const [showNav, setShowNav] = useState(false); // full navigation only via ?nav=1 (home-page links)
   const debounce = useRef();
-
-  useEffect(() => {
-    try { setShowNav(new URLSearchParams(window.location.search).get("nav") === "1"); } catch {}
-  }, []);
 
   // Load: last-known dataset from localStorage first (page refresh never
   // blanks the board), then fetch the latest published dataset.
@@ -75,17 +68,13 @@ export default function Leaderboard({ cohort, label }) {
   }, [data, tab]);
 
   const isRegional = tab !== "National";
-  const isOverall = cohort === "overall";
+  const isOverall = isOverallBoard ?? cohort === "overall";
 
   return (
     <main className="wrap">
       <header className="hero">
         <div className="hero-top">
-          {showNav ? (
-            <Link href="/" className="brand">Meesho Creator Club</Link>
-          ) : (
-            <span className="brand">Meesho Creator Club</span>
-          )}
+          <span className="brand">Meesho Creator Club</span>
           <span className="live-pill"><span className="live-dot" aria-hidden />LIVE</span>
         </div>
         <h1><span className="trophy" aria-hidden>🏆</span> Sale Leaderboard</h1>
@@ -105,18 +94,6 @@ export default function Leaderboard({ cohort, label }) {
             ? "Can’t find your username or see yourself at the top? 👀 Push harder, climb the leaderboard & win exciting rewards! 🔥"
             : "Can’t find your username on the leaderboard, or not at the top yet? 👀 Push harder, climb the leaderboard & win exciting rewards! 🔥"}
         </p>
-        {showNav && (
-          <div className="cohort-row">
-            <Link href={`/l/overall?nav=1`} className={`cohort-chip ${isOverall ? "active" : ""}`}>
-              Overall
-            </Link>
-            {Object.entries(COHORTS).map(([key, c]) => (
-              <Link key={key} href={`/l/${key}?nav=1`} className={`cohort-chip ${key === cohort ? "active" : ""}`}>
-                {c.label}
-              </Link>
-            ))}
-          </div>
-        )}
       </header>
 
       {data?.meta && (
