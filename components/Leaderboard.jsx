@@ -322,7 +322,7 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
                     const meta = metaLine(r);
                     const pct = Math.max(6, Math.min(100, Math.round((r.gmv / top) * 100)));
                     const gap = prev ? prev.gmv - r.gmv : 0;
-                    const close = prev && gap <= prev.gmv * 0.05;
+                    const close = prev && rank <= 20 && gap <= prev.gmv * 0.02; // only genuinely tight races near the top
                     const showOverall = r.overallRank != null && r.overallRank !== rank;
                     return (
                       <li key={r.id} className={`ar-row${rank <= 10 ? " top10" : ""}`} style={{ animationDelay: `${Math.min(i, 14) * 45}ms` }}>
