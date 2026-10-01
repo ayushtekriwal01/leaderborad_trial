@@ -169,12 +169,8 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
   const rest = rows.slice(3);
   const eyebrow = isOverall ? "MBS Oct Sale · Overall" : `MBS Oct Sale · ${label}`;
 
-  const metaLine = (r) => {
-    const parts = [];
-    if (isRegional) parts.push(`${isOverall ? "Overall" : "National"} #${fmtInt(r.nationalRank)}`);
-    if (!isOverall) parts.push(`Overall #${fmtInt(r.overallRank)}`);
-    return parts.join(" · ");
-  };
+  // Secondary line under the handle: only the extra rank that the left badge doesn't show.
+  const metaLine = (r) => (!isOverall && isRegional ? `National #${fmtInt(r.nationalRank)}` : "");
 
   return (
     <div className="arena">
@@ -324,9 +320,16 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
                     const prev = rows[i + 2];
                     const rank = rankOf(r);
                     const meta = metaLine(r);
+                    const pct = Math.max(6, Math.min(100, Math.round((r.gmv / top) * 100)));
+                    const gap = prev ? prev.gmv - r.gmv : 0;
+                    const close = prev && gap <= prev.gmv * 0.05;
+                    const showOverall = r.overallRank != null && r.overallRank !== rank;
                     return (
-                      <li key={r.id} className="ar-row">
-                        <span className="ar-rank">#{rank}</span>
+                      <li key={r.id} className={`ar-row${rank <= 10 ? " top10" : ""}`} style={{ animationDelay: `${Math.min(i, 14) * 45}ms` }}>
+                        <span className="ar-rankbox">
+                          <span className="ar-rank">#{rank}</span>
+                          {showOverall && <span className="ar-ovr"><small>Overall</small>#{fmtInt(r.overallRank)}</span>}
+                        </span>
                         <span className="ar-avatar">{initial(r)}</span>
                         <span className="ar-who">
                           <Handle r={r} className="ar-handle" />
@@ -335,8 +338,19 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
                         <span className="ar-orders"><b>{fmtInt(r.orders)}</b> orders</span>
                         <span className="ar-sale">{fmtINR(r.gmv)}</span>
                         <span className="ar-gap">
-                          <span className="ar-bar"><span style={{ width: `${Math.max(4, Math.round((r.gmv / top) * 100))}%` }} /></span>
-                          <small>{prev ? `${fmtINR(prev.gmv - r.gmv)} behind #${rankOf(prev)}` : ""}</small>
+                          <span className="ar-track" style={{ "--w": `${pct}%` }}>
+                            <span className="ar-lane" aria-hidden="true" />
+                            <span className="ar-fill" />
+                            <span className="ar-rocket" aria-hidden="true">
+                              <span className="ar-flame" />
+                              <svg viewBox="0 0 30 28" width="26" height="24"><path d="M3 14 L10 7 H22 C26 7 29 10 29 14 C29 18 26 21 22 21 H10 Z" fill="#FFFFFF" /><circle cx="20" cy="14" r="3" fill="#9F2089" /><path d="M10 7 L6 1 H12 L15 7 Z" fill="#F43397" /><path d="M10 21 L6 27 H12 L15 21 Z" fill="#F43397" /></svg>
+                            </span>
+                            <svg className="ar-flag" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#FFD36B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 22V4" /><path d="M4 4h12l-2 4 2 4H4" /></svg>
+                          </span>
+                          <small>
+                            {prev ? `${fmtINR(gap)} behind #${rankOf(prev)}` : ""}
+                            {close && <span className="ar-hot">Close race</span>}
+                          </small>
                         </span>
                       </li>
                     );
