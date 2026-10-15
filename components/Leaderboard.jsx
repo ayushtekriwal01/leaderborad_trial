@@ -92,9 +92,9 @@ function Crown() {
   );
 }
 
-// MBS Oct sale window, IST: live from 9 Oct 2026 00:00 to the end of 17 Oct 2026.
+// MBS Oct sale window, IST: live from 9 Oct 2026 00:00 to the end of 18 Oct 2026.
 const SALE_START = Date.parse("2026-10-09T00:00:00+05:30");
-const SALE_END = Date.parse("2026-10-18T00:00:00+05:30");
+const SALE_END = Date.parse("2026-10-19T00:00:00+05:30");
 
 function Countdown() {
   const [now, setNow] = useState(null); // client-only: avoids server/client time mismatch
@@ -124,7 +124,7 @@ function Countdown() {
       <span className="ar-count-label">
         {phase === "live" ? <span className="ar-count-dot" aria-hidden="true" /> : null}
         {phase === "pre" ? "Sale goes live in" : "Sale is LIVE · ends in"}
-        <small>{phase === "pre" ? "9 Oct, 12:00 am" : "17 Oct, 11:59 pm"}</small>
+        <small>{phase === "pre" ? "9 Oct, 12:00 am" : "18 Oct, 11:59 pm"}</small>
       </span>
       <span className="ar-count-boxes">
         {parts.map(([lbl, v]) => (
