@@ -13,7 +13,7 @@ export function generateMetadata({ params }) {
   const key = resolveSlug(params.cohort);
   const label = key === "overall" ? "Overall" : COHORTS[key]?.label;
   return label
-    ? { title: `MBS Oct Sale Leaderboard — ${label}`, robots: { index: false, follow: false } }
+    ? { title: `MDS Sale Leaderboard — ${label}`, robots: { index: false, follow: false } }
     : {};
 }
 
