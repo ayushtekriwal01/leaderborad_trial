@@ -92,9 +92,9 @@ function Crown() {
   );
 }
 
-// MBS Oct sale window, IST: live from 9 Oct 2026 00:00 to the end of 18 Oct 2026.
-const SALE_START = Date.parse("2026-10-09T00:00:00+05:30");
-const SALE_END = Date.parse("2026-10-19T00:00:00+05:30");
+// MDS sale window, IST: live from 23 Oct 2026 00:00 to the end of 1 Nov 2026.
+const SALE_START = Date.parse("2026-10-23T00:00:00+05:30");
+const SALE_END = Date.parse("2026-11-02T00:00:00+05:30");
 
 function Countdown() {
   const [now, setNow] = useState(null); // client-only: avoids server/client time mismatch
@@ -108,7 +108,7 @@ function Countdown() {
   if (phase === "over") {
     return (
       <div className="ar-count over" role="status">
-        <span className="ar-count-label">MBS Oct Sale has ended · final rankings below</span>
+        <span className="ar-count-label">MDS Sale has ended · final rankings below</span>
       </div>
     );
   }
@@ -124,7 +124,7 @@ function Countdown() {
       <span className="ar-count-label">
         {phase === "live" ? <span className="ar-count-dot" aria-hidden="true" /> : null}
         {phase === "pre" ? "Sale goes live in" : "Sale is LIVE · ends in"}
-        <small>{phase === "pre" ? "9 Oct, 12:00 am" : "18 Oct, 11:59 pm"}</small>
+        <small>{phase === "pre" ? "23 Oct, 12:00 am" : "1 Nov, 11:59 pm"}</small>
       </span>
       <span className="ar-count-boxes">
         {parts.map(([lbl, v]) => (
@@ -210,7 +210,7 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
   const top = rows[0]?.gmv || 1;
   const podium = [rows[1], rows[0], rows[2]].filter(Boolean);
   const rest = rows.slice(3);
-  const eyebrow = isOverall ? "MBS Oct Sale · Overall" : `MBS Oct Sale · ${label}`;
+  const eyebrow = isOverall ? "MDS Sale · Overall" : `MDS Sale · ${label}`;
 
   // Secondary line under the handle: only the extra rank that the left badge doesn't show.
   const metaLine = (r) => (!isOverall && isRegional ? `National #${fmtInt(r.nationalRank)}` : "");
