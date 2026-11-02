@@ -25,6 +25,14 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
+  // Sale over: once LEADERBOARD_FROZEN=1 is set in Vercel, the final board is locked.
+  if (process.env.LEADERBOARD_FROZEN === "1") {
+    return NextResponse.json(
+      { ok: false, frozen: true, error: "Leaderboard is frozen — the sale has ended. No further updates." },
+      { status: 423 }
+    );
+  }
+
   const rows = Array.isArray(body) ? body : body?.rows;
   if (!Array.isArray(rows) || rows.length === 0) {
     return NextResponse.json({ ok: false, error: "body.rows must be a non-empty array" }, { status: 400 });
