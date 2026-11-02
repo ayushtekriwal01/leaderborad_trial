@@ -108,7 +108,11 @@ function Countdown() {
   if (phase === "over") {
     return (
       <div className="ar-count over" role="status">
-        <span className="ar-count-label">MDS Sale has ended · final rankings below</span>
+        <span className="ar-count-label">
+          <svg className="ar-lock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+          Leaderboard frozen · Final results
+          <small>MDS Sale ended 1 Nov, 11:59 pm · no further updates</small>
+        </span>
       </div>
     );
   }
@@ -135,6 +139,18 @@ function Countdown() {
   );
 }
 
+// True once the sale is over (client-only, re-checked every 30s).
+function useSaleEnded() {
+  const [ended, setEnded] = useState(false);
+  useEffect(() => {
+    const check = () => setEnded(Date.now() >= SALE_END);
+    check();
+    const t = setInterval(check, 30000);
+    return () => clearInterval(t);
+  }, []);
+  return ended;
+}
+
 export default function Leaderboard({ cohort, label, isOverallBoard }) {
   const storageKey = `mcc-lb-${cohort}`;
   const [data, setData] = useState(null);
@@ -145,6 +161,7 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
   const [results, setResults] = useState(null);
   const [party, setParty] = useState(0);
   const debounce = useRef();
+  const ended = useSaleEnded();
   const partyTimer = useRef();
 
   const confetti = useMemo(() => makeConfetti(46, 7), []);
@@ -225,10 +242,14 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
         <header className="ar-topbar">
           <div className="ar-brandrow">
             <span className="ar-brand">Meesho Creator Club</span>
-            <span className="ar-live"><span className="ar-live-dot" aria-hidden="true" />LIVE</span>
+            {ended ? (
+              <span className="ar-live final"><svg className="ar-lock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>FINAL</span>
+            ) : (
+              <span className="ar-live"><span className="ar-live-dot" aria-hidden="true" />LIVE</span>
+            )}
           </div>
           {data?.meta && (
-            <span className="ar-updated">Last updated <b>{fmtTime(data.meta.generatedAt)}</b></span>
+            <span className="ar-updated">{ended ? "Frozen · final as of " : "Last updated "}<b>{fmtTime(data.meta.generatedAt)}</b></span>
           )}
         </header>
 
@@ -247,7 +268,9 @@ export default function Leaderboard({ cohort, label, isOverallBoard }) {
               <p className="ar-peer">You’re seeing creators just like you — this board groups similar-sized creators, so it’s a fair race!</p>
             )}
             <p className="ar-cta">
-              {isOverall
+              {ended
+                ? "The sale is over — these are the final, frozen rankings. Thank you for creating with us!"
+                : isOverall
                 ? "Can’t find your username or see yourself at the top? Push harder, climb the leaderboard & win exciting rewards!"
                 : "Can’t find your username on the leaderboard, or not at the top yet? Push harder, climb the leaderboard & win exciting rewards!"}
             </p>
