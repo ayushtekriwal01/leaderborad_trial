@@ -466,6 +466,13 @@ a { color: inherit; }
   .ar-count-box b { font-size: 28px; }
 }
 
+/* ---------- frozen / final state ---------- */
+.ar-live.final { color: #ffd36b; border-color: #8a6a1c; background: #2a1d05; }
+.ar-lock { flex-shrink: 0; }
+.ar-count.over { background: linear-gradient(110deg, #2a1d05, #3a1132 60%, #2a0b21); border: 1px solid #8a6a1c; }
+.ar-count.over .ar-count-label { color: #ffe08a; }
+.ar-count.over .ar-count-label small { color: #f3d6e5; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .ar-confetti, .ar-burst-origin, .ar-bigburst { display: none; }
